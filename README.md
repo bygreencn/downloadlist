@@ -13,3 +13,9 @@
 }
 
 参见download下的示例配置文件。
+
+# 依赖
+* libcurl
+* [libcpr](https://github.com/webcpp/libcpr)
+* libjsoncpp
+
