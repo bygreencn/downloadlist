@@ -1,0 +1,2 @@
+g++ -O2 -std=c++11   -c -o main.o main.cpp
+g++ -O2 -std=c++11 -lcpr -lcurl -ljsoncpp  -o googlefonts main.o
