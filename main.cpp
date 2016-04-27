@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <thread>
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 #include <cpr/cpr.h>
 
 int main(int argc, char** argv) {
