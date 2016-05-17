@@ -52,8 +52,6 @@ int main(int argc, char** argv) {
 
     auto downfun = [&](const std::string& name, const std::string & url, time_t timeout) {
         if (!name.empty()&&!url.empty()) {
-            clock_t start, finish;
-            start = clock();
             cpr::Response res = cpr::Get(cpr::Url{url}, cpr::Timeout(timeout * 1000));
             if (res.status_code == 200) {
                 std::ofstream out(dir + "/" + name, std::ios::out | std::ios::binary | std::ios::trunc);
@@ -61,9 +59,7 @@ int main(int argc, char** argv) {
             } else {
                 std::cout << url << " not download " << std::endl;
             }
-
-            finish = clock();
-            std::cout << (name + " time-consuming : ") << (double) (finish - start) / CLOCKS_PER_SEC <<"s"<< std::endl;
+            std::cout << ("download " + name + " take ") << res.elapsed << " seconds " << std::endl;
         }
     };
 

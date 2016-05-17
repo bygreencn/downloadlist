@@ -9,9 +9,9 @@
 
 ```
 {
-	"name":"example.txt",
-	"url":"http://www.example.com/example.txt",
-        "timeout":60
+    "name":"example.txt",
+    "url":"http://www.example.com/example.txt",
+    "timeout":60
 }
 ```
 
