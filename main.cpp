@@ -1,40 +1,87 @@
 #include <iostream>
 #include <fstream>
 #include <thread>
+#include <vector>
+#include <ctime>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <json/json.h>
 #include <cpr/cpr.h>
 
 int main(int argc, char** argv) {
-	const std::string conf("download/downloadlist.json");
-	std::ifstream in;
-	in.open(conf.c_str());
-	if (!in.is_open()) {
-		std::cout << (conf + " not found") << std::endl;
-		return -1;
-	}
-	Json::Value root;
-	Json::Reader reader;
-	reader.parse(in, root);
-	in.close();
-	std::string name, url;
-	auto downfun = [](const std::string& name, const std::string & url) {
-		std::cout << "thread start " << name << std::endl;
-		cpr::Response res = cpr::Get(cpr::Url{url});
-		if (res.status_code == 200) {
-			std::ofstream out("download/" + name, std::ios::out | std::ios::binary | std::ios::trunc);
-			out << res.text;
-		} else {
-			std::cout << name << " not download " << std::endl;
-		}
-		std::cout << "thread stop " << name << std::endl;
-	};
+    std::string conf, dir;
+    bool checkOption = false;
+    if (argc == 3) {
+        conf = argv[1];
+        dir = argv[2];
+        size_t p = conf.find("="), q = dir.find("=");
+        if (p != std::string::npos && q != std::string::npos) {
+            conf = conf.substr(p + 1);
+            dir = dir.substr(q + 1);
+            if (!(conf.empty() || dir.empty())) {
+                checkOption = true;
+            }
+        }
+    }
+    if (!checkOption) {
+        std::cout << "options error" << std::endl;
+        return -1;
+    }
 
-	for (int i = 0; i < root.size(); ++i) {
-		name = root[i]["name"].asString();
-		url = root[i]["url"].asString();
-		std::shared_ptr<std::thread> th(new std::thread(downfun, name, url));
-		th->join();
-	}
-	return 0;
+    struct stat sb;
+    if (stat(dir.c_str(), &sb) && mkdir(dir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)) {
+        std::cout << "dir is not exists.create dir is not successful." << std::endl;
+        return -1;
+    }
+
+    std::ifstream in;
+    in.open(conf.c_str());
+    if (!in.is_open()) {
+        std::cout << (conf + " not found.") << std::endl;
+        return -1;
+    }
+
+    Json::Value root;
+    Json::Reader reader;
+    if (!reader.parse(in, root)) {
+        std::cout << "conf parse failed." << std::endl;
+        in.close();
+        return -1;
+    }
+    in.close();
+
+    auto downfun = [&](const std::string& name, const std::string & url, time_t timeout) {
+        if (!name.empty()&&!url.empty()) {
+            clock_t start, finish;
+            start = clock();
+            cpr::Response res = cpr::Get(cpr::Url{url}, cpr::Timeout(timeout * 1000));
+            if (res.status_code == 200) {
+                std::ofstream out(dir + "/" + name, std::ios::out | std::ios::binary | std::ios::trunc);
+                out << res.text;
+            } else {
+                std::cout << url << " not download " << std::endl;
+            }
+
+            finish = clock();
+            std::cout << (name + " time-consuming : ") << (double) (finish - start) / CLOCKS_PER_SEC <<"s"<< std::endl;
+        }
+    };
+
+    std::string name, url;
+    time_t timeout = 60;
+    std::vector<std::shared_ptr<std::thread> > thList;
+    for (int i = 0; i < root.size(); ++i) {
+        if (!root[i]["name"].isNull()&&!root[i]["url"].isNull()&&!root[i]["timeout"].isNull()) {
+            name = root[i]["name"].asString();
+            url = root[i]["url"].asString();
+            timeout = root[i]["timeout"].asUInt();
+            std::shared_ptr<std::thread> th(new std::thread(downfun, name, url, timeout));
+            thList.push_back(th);
+        }
+    }
+    for (auto & item : thList) {
+        item->join();
+    }
+    return 0;
 }
 

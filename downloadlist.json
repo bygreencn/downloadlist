@@ -1,0 +1,34 @@
+[
+    {
+        "name": "jquery.min.js",
+        "url": "http://cdn.bootcss.com/jquery/2.2.3/jquery.min.js",
+        "timeout": 60
+    },
+    {
+        "name": "bootstrap-3.3.5-dist.zip",
+        "url": "http://d.bootcss.com/bootstrap-3.3.5-dist.zip",
+        "timeout": 600
+    },
+    {
+        "name": "jquery-ui.min.css",
+        "url": "http://cdn.bootcss.com/jqueryui/1.11.4/jquery-ui.min.css",
+        "timeout": 60
+    },
+    {
+        "name": "jquery-ui.min.js",
+        "url": "http://cdn.bootcss.com/jqueryui/1.11.4/jquery-ui.min.js",
+        "timeout": 60
+    },
+    {
+        "name": "jquery-ui.theme.min.css",
+        "url": "http://cdn.bootcss.com/jqueryui/1.11.4/jquery-ui.theme.min.css",
+        "timeout": 60
+    },
+    {
+        "name": "jquery-ui.structure.min.css",
+        "url": "http://cdn.bootcss.com/jqueryui/1.11.4/jquery-ui.structure.min.css",
+        "timeout": 60
+    }
+]
+
+

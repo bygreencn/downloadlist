@@ -11,7 +11,7 @@ $(PRO):$(OBJ)
 	g++ $(CXXFLAGS) $(LIBS) $(LDFLAGS) -o $@ $^
 
 test:
-	./${PRO}
+	./${PRO} --conf=downloadlist.json --dir=download
 
 clean:
 	rm -f $(PRO)
