@@ -19,7 +19,7 @@
 * url:下载链接
 * timeout: 超时设置，以秒计
 
-参见downloadlist,json示例配置文件。
+参见downloadlist.json示例配置文件。
 
 例如
 
