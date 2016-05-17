@@ -14,22 +14,24 @@ int main(int argc, char** argv) {
     if (argc == 3) {
         conf = argv[1];
         dir = argv[2];
-        size_t p = conf.find("="), q = dir.find("=");
-        if (p != std::string::npos && q != std::string::npos) {
-            conf = conf.substr(p + 1);
-            dir = dir.substr(q + 1);
+        std::string confOption("--conf="), dirOption("--dir=");
+        size_t p = conf.find(confOption), q = dir.find(dirOption);
+        if (p == 0 && q == 0) {
+            conf = conf.substr(confOption.size());
+            dir = dir.substr(dirOption.size());
             if (!(conf.empty() || dir.empty())) {
                 checkOption = true;
             }
         }
     }
+
     if (!checkOption) {
         std::cout << "options error" << std::endl;
         return -1;
     }
 
     struct stat sb;
-    if (stat(dir.c_str(), &sb) && mkdir(dir.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH)) {
+    if (stat(dir.c_str(), &sb) && mkdir(dir.c_str(), S_IRWXU | S_IRWXG | S_IRWXO)) {
         std::cout << "dir is not exists.create dir is not successful." << std::endl;
         return -1;
     }
