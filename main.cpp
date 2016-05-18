@@ -26,7 +26,8 @@ int main(int argc, char** argv) {
     }
 
     if (!checkOption) {
-        std::cout << "options error" << std::endl;
+        std::cout << "options error." << std::endl;
+        std::cout << "example:downloadlist --conf=downloadlist.json --dir=download" << std::endl;
         return -1;
     }
 
